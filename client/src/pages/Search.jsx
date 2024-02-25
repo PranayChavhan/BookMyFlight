@@ -2,7 +2,25 @@ import React, { useState, useEffect } from "react";
 import Cobe from "../components/AutoGlobe";
 import { TiArrowSortedDown } from "react-icons/ti";
 import { TiArrowSortedUp } from "react-icons/ti";
-function Search({ isAuthenticated }) {
+import { FaPlaneDeparture } from "react-icons/fa";
+import Autosuggest from 'react-autosuggest';
+
+
+
+function Search() {
+  const [count, setCount] = useState(0);
+
+  const handleIncrement = () => {
+    setCount(count + 1);
+  };
+
+  const handleDecrement = () => {
+    if (count > 0) {
+      setCount(count - 1);
+    }
+  };
+
+
   const [searchData, setSearchData] = useState({
     origin: '',
     destination: '',
@@ -28,6 +46,68 @@ function Search({ isAuthenticated }) {
     // Add your flight search logic here
     console.log('Search submitted:', searchData);
   };
+
+
+  const [suggestions, setSuggestions] = useState([]);
+
+  useEffect(() => {
+    // Dummy array of city suggestions
+    const dummyCities = [
+      { name: 'New York', country: 'USA' },
+      { name: 'London', country: 'UK' },
+      { name: 'Paris', country: 'France' },
+      // Add more dummy cities as needed
+    ];
+
+    setSuggestions(dummyCities);
+  }, [searchData.origin]);
+
+  const fetchCities = async (inputValue) => {
+    // Simulating an API call delay
+    setTimeout(() => {
+      setSuggestions([
+        { name: 'New York', country: 'USA' },
+        { name: 'London', country: 'UK' },
+        { name: 'Paris', country: 'France' },
+        // Add more dummy cities as needed
+      ]);
+    }, 300);
+  };
+
+  const handleChangee = (e, { newValue, method }) => {
+    setSearchData({
+      ...searchData,
+      origin: newValue,
+    });
+  };
+
+  const onSuggestionsFetchRequested = ({ value }) => {
+    // Fetch suggestions when the input value changes
+    fetchCities(value);
+  };
+
+  const onSuggestionsClearRequested = () => {
+    setSuggestions([]);
+  };
+
+  const getSuggestionValue = (suggestion) => suggestion.name;
+
+  const renderSuggestion = (suggestion) => (
+    <div className="py-2 px-2  border-b-[0.8px]  border-gray-400 cursor-pointer hover:bg-gray-300 rounded-sm flex flex-row items-center gap-2">
+      <FaPlaneDeparture />
+      {suggestion.name}, {suggestion.country}
+    </div>
+  );
+
+  const renderSuggestionsContainer = ({ containerProps, children }) => (
+    <div
+      {...containerProps}
+      className="absolute bg-gray-200 text-black rounded-sm  z-10  w-[14.5rem] mt-1 "
+    >
+      {children}
+    </div>
+  );
+
   return (
     <>
       <main className="bg-thegray relative">
@@ -60,17 +140,25 @@ function Search({ isAuthenticated }) {
 
        <div className="flex flex-row items-center gap-2">
        <div className="mb-4">
-          <label htmlFor="origin" className=" block mb-1">
+          <label htmlFor="origin" className="text-white block mb-1">
             From
           </label>
-          <input
-            type="text"
-            id="origin"
-            name="origin"
-            value={searchData.origin}
-            onChange={handleChange}
-            className="w-full px-3 py-2 rounded bg-gray-200 text-black"
-            required
+          <Autosuggest
+            suggestions={suggestions}
+            onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+            onSuggestionsClearRequested={onSuggestionsClearRequested}
+            getSuggestionValue={getSuggestionValue}
+            renderSuggestion={renderSuggestion}
+            renderSuggestionsContainer={renderSuggestionsContainer}
+            inputProps={{
+              id: 'origin',
+              name: 'origin',
+              value: searchData.origin,
+              onChange: handleChangee,
+              className: 'w-full px-3 py-2 rounded bg-gray-200 text-black',
+              required: true,
+              
+            }}
           />
         </div>
         <div className="mb-4">
@@ -150,6 +238,67 @@ function Search({ isAuthenticated }) {
 </select>
 
 <p>Adults</p>
+
+<div className="flex items-center ">
+      <button
+        className="bg-gray-400 text-black px-4 py-2 rounded-md"
+        onClick={handleDecrement}
+      >
+        -
+      </button>
+      <span className="bg-gray-200 text-black px-4 py-2">{count}</span>
+      <button
+        className="bg-gray-400 text-black px-4 py-2 rounded-md"
+        onClick={handleIncrement}
+      >
+        +
+      </button>
+
+      <p className="ml-4">16+ years</p>
+    </div>
+
+    <p className="mt-2">Children</p>
+
+<div className="flex items-center ">
+      <button
+        className="bg-gray-400 text-black px-4 py-2 rounded-md"
+        onClick={handleDecrement}
+      >
+        -
+      </button>
+      <span className="bg-gray-200 text-black px-4 py-2">{count}</span>
+      <button
+        className="bg-gray-400 text-black px-4 py-2 rounded-md"
+        onClick={handleIncrement}
+      >
+        +
+      </button>
+
+      <p className="ml-4">0-15 years</p>
+    </div>
+
+    <p className="mt-2">Age of child 1</p>
+
+<select
+  id="flightClass"
+  name="flightClass"
+  value={searchData.flightClass}
+  onChange={handleChange}
+  className="w-full px-3 py-2 rounded border-[0.8px] border-gray-500 bg-gray-200 text-black my-2"
+  required
+>
+  <option value="Economy">Select age</option>
+  <option value="Premium Economy">0</option>
+  <option value="Business">1</option>
+  <option value="FirstClass">2</option>
+</select>
+
+
+<p className="text-[12px] italic">Your age at time of travel must be valid for the age category booked. Airlines have restrictions on under 18s travelling alone.</p>
+
+<p className="text-[12px] italic mt-2">Age limits and policies for travelling with children may vary so please check with the airline before booking.</p>
+ 
+<button onClick={()=>{setActiveModal(false)}} className="border-2 border-gray-400 px-6 rounded-md shadow-lg mt-4 opacity-70 hover:opacity-100  py-1 ">Done</button>
 
 </div>
             </>
