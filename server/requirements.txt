@@ -1,2 +1,6 @@
 uvicorn==0.25.0
 fastapi[all]
+pymongo
+pydantic[email]
+bcrypt
+PyJWT

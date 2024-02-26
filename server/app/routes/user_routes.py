@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException, Path
 from app.controllers.user_controller import UserController
 from app.models.user import User
-from typing import List
+from app.models.response import AuthResponse
+from app.schemas.user_schema import UserSigninSchema, UserSignupSchema
 
 router = APIRouter()
 user_controller = UserController()
@@ -13,10 +14,11 @@ async def read_user(user_id: str = Path(..., title="The ID of the user")):
         return user
     raise HTTPException(status_code=404, detail="User not found")
 
-@router.get("/users", response_model=List[User])
-async def read_all_users():
-    return user_controller.get_all_users()
 
-@router.post("/users", response_model=User)
-async def create_user(user: User):
+@router.post("/signup", response_model=AuthResponse)
+async def create_user(user: UserSignupSchema):
     return user_controller.create_user(user)
+
+@router.post("/signin", response_model=AuthResponse)
+async def login_user(user: UserSigninSchema):
+    return user_controller.login_user(user)

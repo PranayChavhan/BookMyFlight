@@ -1,7 +1,10 @@
-from pydantic import BaseModel
-
+from typing import Optional
+from pydantic import BaseModel, EmailStr
+from datetime import datetime
 class User(BaseModel):
-    id: str
+    id: Optional[str] = None
     username: str
-    email: str = None
-    full_name: str = None
+    email: EmailStr
+    password: str
+    registrationDate: datetime = None
+    
