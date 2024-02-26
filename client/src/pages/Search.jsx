@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import Cobe from "../components/AutoGlobe";
 import { TiArrowSortedDown } from "react-icons/ti";

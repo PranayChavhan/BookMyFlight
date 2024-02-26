@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Cobe from "../components/AutoGlobe";
