@@ -1,10 +1,10 @@
 from typing import List
-from fastapi import APIRouter, HTTPException, Path
+from fastapi import APIRouter, HTTPException, Path, Query
 from app.controllers.flight_controller import FlightController
 from app.models.flight import Flight
 from app.models.response import GenericResponse
-from app.schemas.flight_schema import AddFlightSchema
-
+from app.schemas.flight_schema import AddFlightSchema, FlightBookingSchema
+from datetime import datetime
 router = APIRouter()
 flight_controller = FlightController()
 
@@ -19,3 +19,25 @@ async def delete_flight(flight_id: str):
         return response
     except HTTPException as e:
         return e
+    
+@router.get("/flights", response_model=List[Flight])
+async def get_flights_by_criteria(
+    departure_city: str = Query(..., title="Departure City"),
+    destination_city: str = Query(..., title="Destination City"),
+    departure_time: datetime = Query(..., title="Departure Date (YYYY-MM-DD)")
+):
+    try:
+        flights = flight_controller.get_flights_by_criteria(
+            departure_city=departure_city,
+            destination_city=destination_city,
+            departure_time=departure_time
+        )
+        return flights
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+
+@router.post("/flights/book", response_model=GenericResponse)
+async def book_flight(booking: FlightBookingSchema):
+    response = flight_controller.book_flight(booking)
+    return response

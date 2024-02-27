@@ -1,11 +1,15 @@
 from typing import List
+
+from bson import ObjectId
 from app.models.user import User
-from app.models.response import AuthResponse
+from app.models.response import AuthResponse, GenericResponse
 from app.db.connection import db
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
 import jwt
 from fastapi import HTTPException, status
+
+from app.models.flight import FlightBooking
 class UserController:
     def __init__(self, secret_key="bookmyflight", algorithm="HS256"):
          self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -71,5 +75,24 @@ class UserController:
             message="Login successful",
             data=user_data,
             token=jwt_token,
+            status_code=status.HTTP_200_OK
+        )
+        
+
+    def get_user_bookings(self, user_id: str) -> GenericResponse:
+        user = db.get_database()["users"].find_one({"_id": ObjectId(user_id)})
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+
+        bookings_cursor = db.get_database()["bookings"].find({"user_id": user_id})
+        bookings_list = [FlightBooking(**booking) for booking in bookings_cursor]
+
+        return GenericResponse(
+            success=True,
+            message="User bookings retrieved successfully",
+            data=bookings_list,
             status_code=status.HTTP_200_OK
         )

@@ -20,3 +20,16 @@ class Flight(BaseModel):
     aircraft_type: str
     booking_status: bool = False
     classes: List[FlightClass] = []
+    
+    
+class Passenger(BaseModel):
+    name: str
+    age: int
+    gender: str
+
+class FlightBooking(BaseModel):
+    user_id: str
+    flight_id: str
+    passengers: List[Passenger]
+    booking_date: datetime
+    total_price: float
