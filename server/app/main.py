@@ -1,10 +1,11 @@
 from fastapi import FastAPI
-from app.routes import user_routes, flight_routes
+from app.routes import user_routes, flight_routes, admin_routes
 
 app = FastAPI()
 
 app.include_router(user_routes.router, prefix="/api")
 app.include_router(flight_routes.router, prefix="/api")
+app.include_router(admin_routes.router, prefix="/api/admin")
 
 
 @app.get("/")

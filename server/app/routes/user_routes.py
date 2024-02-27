@@ -1,7 +1,5 @@
-from typing import List
-from fastapi import APIRouter, HTTPException, Path
+from fastapi import APIRouter
 from app.controllers.user_controller import UserController
-from app.models.user import User
 from app.models.response import AuthResponse, GenericResponse
 from app.schemas.user_schema import UserSigninSchema, UserSignupSchema
 
