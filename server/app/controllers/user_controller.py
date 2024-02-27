@@ -1,3 +1,4 @@
+from typing import List
 from app.models.user import User
 from app.models.response import AuthResponse
 from app.db.connection import db
@@ -10,20 +11,6 @@ class UserController:
          self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
          self.secret_key = secret_key
          self.algorithm = algorithm
-    
-     
-    def get_user(self, user_id: str) -> User:
-        user_data = db.get_database()["users"].find_one({"_id": user_id})
-        
-        if user_data:
-            user_data["id"] = str(user_data["_id"])
-            del user_data["_id"]
-            
-            return User(**user_data)
-        else:
-            return None
-
-
 
     def create_user(self, user: User) -> AuthResponse:
         existing_user_email = db.get_database()["users"].find_one({"email": user.email})
@@ -68,7 +55,9 @@ class UserController:
         password = user.password
 
         user_data = db.get_database()["users"].find_one({"email": useremail})
-
+        
+        user_data["_id"] = str(user_data["_id"])
+        
         if user_data is None or not self.pwd_context.verify(password, user_data["password"]):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -80,7 +69,7 @@ class UserController:
         return AuthResponse(
             success=True,
             message="Login successful",
-            data=User(**user_data),
+            data=user_data,
             token=jwt_token,
             status_code=status.HTTP_200_OK
         )

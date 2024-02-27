@@ -11,7 +11,7 @@ class MongoDB:
 
     def test_connection(self) -> str:
         try:
-            self.db["flight"].find_one()
+            self.db["flights"].find_one()
             return "MongoDB connection successful!"
         except Exception as e:
             return f"Error connecting to MongoDB: {str(e)}"
