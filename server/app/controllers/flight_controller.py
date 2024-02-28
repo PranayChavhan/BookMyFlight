@@ -6,6 +6,8 @@ from app.db.connection import db
 from fastapi import HTTPException, status
 from datetime import datetime
 
+from app.models.user import User
+
 
 class FlightController:
     

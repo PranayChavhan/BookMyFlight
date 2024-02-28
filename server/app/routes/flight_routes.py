@@ -1,19 +1,24 @@
-from typing import List
-from fastapi import APIRouter, HTTPException, Path, Query
+from typing import Annotated, List
+from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from app.controllers.flight_controller import FlightController
 from app.models.flight import Flight
 from app.models.response import GenericResponse
 from app.schemas.flight_schema import AddFlightSchema, FlightBookingSchema
 from datetime import datetime
+from app.middleware.Auth import get_current_active_user
+from app.models.user import User
+
+
 router = APIRouter()
 flight_controller = FlightController()
 
+
 @router.post("/add-flight", response_model=GenericResponse)
-async def add_flight(flight: AddFlightSchema):
+async def add_flight(flight: AddFlightSchema, current_user: Annotated[User, Depends(get_current_active_user)]):
     return flight_controller.add_flight(flight)
 
 @router.delete("/delete-flight/{flight_id}", response_model=GenericResponse)
-async def delete_flight(flight_id: str):
+async def delete_flight(flight_id: str, current_user: Annotated[User, Depends(get_current_active_user)]):
     try:
         response = flight_controller.delete_flight(flight_id)
         return response
@@ -38,6 +43,6 @@ async def get_flights_by_criteria(
     
 
 @router.post("/flights/book", response_model=GenericResponse)
-async def book_flight(booking: FlightBookingSchema):
+async def book_flight(booking: FlightBookingSchema, current_user: Annotated[User, Depends(get_current_active_user)]):
     response = flight_controller.book_flight(booking)
     return response
