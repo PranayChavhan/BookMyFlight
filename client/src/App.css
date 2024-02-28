@@ -291,11 +291,23 @@ body {
   color: white;
   border-radius: 0.75rem;
   box-shadow: 0 0 10px rgba(96, 165, 250, 1);
-
-  
 }
 
+.flight-shadow {
+  border: 1px solid rgb(184, 184, 184);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8.5px);
+  -webkit-backdrop-filter: blur(8.5px);
+  color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 0 10px rgba(96, 165, 250, 1);
+}
 
+.flight-shadow:hover {
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 15px rgba(96, 165, 250, 1);
+}
 
 
 @keyframes fadeIn {

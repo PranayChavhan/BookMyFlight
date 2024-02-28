@@ -413,6 +413,71 @@ function Search() {
               </div>
             </form>
           </div>
+
+
+
+          <div className="mt-10">
+<h1 className="text-2xl font-black text-white mb-5 ">Your Search Results:</h1>
+          <div
+              className="bg-gray-900 bg-opacity-30 text-white p-8 rounded-lg w-full flex flex-col flight-shadow"
+             
+            >
+              <div className="flex flex-row items-center justify-between gap-4">
+                <div className="mb-4 flex items-center">
+                  <input
+                    type="radio"
+                    id="oneWay"
+                    name="tripType"
+                    value="oneWay"
+                    checked={searchData.tripType === "oneWay"}
+                    onChange={handleChange}
+                    className="mr-2"
+                  />
+                  <label htmlFor="oneWay" className="text-white">
+                    IndiGo
+                  </label>
+                </div>
+
+                <div className="mb-4 flex items-center">
+                  
+                  <label htmlFor="return" className="text-white">
+                    100% on time
+                  </label>
+                </div>
+              </div>
+              <div className="flex flex-row items-center justify-between gap-28">
+                <div className="mb-4">
+                  <div className="text-white block mb-1">
+                    <p className="font-bold text-2xl">05:30</p> <p className="text-sm">New Delhi</p>
+                  </div>
+                  
+                </div>
+                <div className="mb-4">
+                  <div className="mb-1 flex flex-col items-center justify-center">
+                    <p className="font-bold">2h 5m</p> <p>Non stop</p>
+                  </div>
+                  
+                </div>
+                <div className="mb-4">
+                  <div className=" block mb-1">
+                    <p className="font-bold text-2xl">07:35</p> <p className="text-sm">Mumbai</p>
+                  </div>
+                 
+                </div>
+                <div className="mb-4">
+                  <label htmlFor="passengers" className=" block mb-1">
+                  <p className="font-bold text-2xl">5,533</p> <p className="text-sm">per adult</p>
+                  </label>
+                  
+                </div>
+              </div>
+
+            </div>
+
+
+
+
+          </div>
         </div>
       </main>
     </>
