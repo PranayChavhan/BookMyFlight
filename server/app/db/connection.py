@@ -1,6 +1,12 @@
 from pymongo import MongoClient
 from pymongo.database import Database
+from dotenv import load_dotenv
+import os
 
+
+load_dotenv()
+
+mongo_uri = os.getenv("MONGO_URI")
 class MongoDB:
     def __init__(self, uri: str, db_name: str):
         self.client = MongoClient(uri)
@@ -17,7 +23,6 @@ class MongoDB:
             return f"Error connecting to MongoDB: {str(e)}"
 
 
-mongo_uri = "mongodb+srv://chavhanpranay:7774860123@cluster0.mt1t8k5.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 mongo_db_name = "flightbooking"
 
 db = MongoDB(uri=mongo_uri, db_name=mongo_db_name)
