@@ -10,4 +10,4 @@ port_number = os.getenv("PORT")
 
 print(success_message)
 if __name__ == "__main__":
-    uvicorn.run("app.main:app", host="0.0.0.0", port=int(port_number), reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8080, reload=True)
