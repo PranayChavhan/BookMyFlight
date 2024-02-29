@@ -24,6 +24,7 @@
     "@tippyjs/react": "^4.2.6",
     "@vercel/analytics": "^1.0.2",
     "autoprefixer": "^10.4.15",
+    "axios": "^1.6.7",
     "body-parser": "^1.20.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
@@ -33,6 +34,8 @@
     "express": "^4.18.2",
     "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^3.1.2",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.291.0",
     "node-fetch": "^3.3.2",
@@ -51,10 +54,12 @@
     "react-spinners": "^0.13.8",
     "react-spring": "^9.7.3",
     "react-text-typist": "^1.1.8",
+    "react-toastify": "^10.0.4",
     "tailwind-merge": "^2.0.0",
     "tailwindcss": "^3.3.3",
     "tailwindcss-animate": "^1.0.7",
-    "tippy.js": "^6.3.7"
+    "tippy.js": "^6.3.7",
+    "universal-cookie": "^7.1.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

@@ -25,7 +25,7 @@ async def delete_flight(flight_id: str, current_user: Annotated[User, Depends(ge
     except HTTPException as e:
         return e
     
-@router.get("/flights", response_model=List[Flight])
+@router.get("/flights", response_model=GenericResponse)
 async def get_flights_by_criteria(
     departure_city: str = Query(..., title="Departure City"),
     destination_city: str = Query(..., title="Destination City"),
@@ -46,3 +46,14 @@ async def get_flights_by_criteria(
 async def book_flight(booking: FlightBookingSchema, current_user: Annotated[User, Depends(get_current_active_user)]):
     response = flight_controller.book_flight(booking)
     return response
+
+
+@router.get("/flight/{flight_id}", response_model=GenericResponse)
+async def get_flight_by_id(flight_id: str):
+    return flight_controller.get_flight_by_id(flight_id)
+
+
+@router.get("/bookings", response_model=list[FlightBookingSchema])
+def get_all_bookings():
+    bookings = flight_controller.get_all_bookings()
+    return bookings

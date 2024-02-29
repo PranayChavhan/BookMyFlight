@@ -9,8 +9,17 @@ from pydantic import BaseModel
 from app.db.connection import db
 from app.models.user import Token, TokenData, User, UserInDB
 from app.middleware.Auth import authenticate_user, create_access_token
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):

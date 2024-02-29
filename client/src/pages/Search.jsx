@@ -5,10 +5,34 @@ import { TiArrowSortedDown } from "react-icons/ti";
 import { TiArrowSortedUp } from "react-icons/ti";
 import { FaPlaneDeparture } from "react-icons/fa";
 import Autosuggest from "react-autosuggest";
+import { getRequestJson } from "../api/api";
+import { useNavigate } from "react-router-dom";
 
 function Search() {
   const [count, setCount] = useState(0);
+  const navigate = useNavigate();
   const [childCount, setChildCount] = useState(0);
+  const [token, setToken] = useState("");
+  const [flightsData, setFlightsData] = useState("");
+
+  useEffect(() => {
+    const getCookie = (name) => {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith(name + "=")) {
+          return cookie.substring(name.length + 1);
+        }
+      }
+      return null;
+    };
+    const jwtToken = getCookie("jwt_auth_token");
+    if (jwtToken) {
+      setToken(jwtToken);
+    } else {
+      console.log("JWT Token not found in cookies");
+    }
+  }, []);
 
   const handleIncrement = () => {
     setCount(count + 1);
@@ -54,8 +78,29 @@ function Search() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add your flight search logic here
-    console.log("Search submitted:", searchData);
+
+    const newDate = searchData.departureDate;
+    const formData = {
+      departure_city: searchData.origin,
+      destination_city: searchData.destination,
+      departure_time: `${newDate}T00:00:00.000Z`,
+    };
+    console.log("Search submitted:", formData);
+
+    getRequestJson(`/api/flights`, formData)
+      .then((data) => {
+        console.log("API response:", data);
+        setFlightsData(data.data);
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 400) {
+          console.error(
+            "API error: User with this email or phone already exists"
+          );
+        } else {
+          console.error("API error:", error);
+        }
+      });
   };
 
   const [suggestions, setSuggestions] = useState([]);
@@ -117,6 +162,23 @@ function Search() {
       {children}
     </div>
   );
+
+  const calculateTimeDifference = (departureTime, arrivalTime) => {
+    const departureDate = new Date(departureTime);
+    const arrivalDate = new Date(arrivalTime);
+
+    // Calculate the time difference in milliseconds
+    const timeDifference = arrivalDate - departureDate;
+
+    // Convert milliseconds to minutes
+    const totalMinutesDifference = Math.floor(timeDifference / (1000 * 60));
+
+    // Calculate hours and remaining minutes
+    const hours = Math.floor(totalMinutesDifference / 60);
+    const minutes = totalMinutesDifference % 60;
+
+    return { hours, minutes };
+  };
 
   return (
     <>
@@ -252,7 +314,7 @@ function Search() {
                   <label htmlFor="passengers" className=" block mb-1">
                     Travellers and cabin class
                   </label>
-                  <button
+                  <div
                     onClick={() => {
                       if (activeModal === false) {
                         setActiveModal(true);
@@ -260,7 +322,7 @@ function Search() {
                         setActiveModal(false);
                       }
                     }}
-                    className="bg-gray-200 relative text-black px-3 py-2 rounded flex flex-row items-center justify-between gap-4"
+                    className="bg-gray-200 cursor-pointer relative text-black px-3 py-2 rounded flex flex-row items-center justify-between gap-4"
                   >
                     <span>
                       {count + childCount} travellers, {searchData.flightClass}{" "}
@@ -270,7 +332,7 @@ function Search() {
                     ) : (
                       <TiArrowSortedDown size={25} />
                     )}
-                  </button>
+                  </div>
                   {activeModal ? (
                     <>
                       <div className="bg-gray-200 text-black mt-1 absolute w-[25rem] left-[68%] rounded-sm p-4">
@@ -294,21 +356,21 @@ function Search() {
                         <p>Adults</p>
 
                         <div className="flex items-center ">
-                          <button
-                            className="bg-gray-400 text-black px-4 py-2 rounded-md"
+                          <div
+                            className="bg-gray-400 cursor-pointer text-black px-4 py-2 rounded-md"
                             onClick={handleDecrement}
                           >
                             -
-                          </button>
+                          </div>
                           <span className="bg-gray-200 text-black px-4 py-2">
                             {count}
                           </span>
-                          <button
-                            className="bg-gray-400 text-black px-4 py-2 rounded-md"
+                          <div
+                            className="bg-gray-400 cursor-pointer text-black px-4 py-2 rounded-md"
                             onClick={handleIncrement}
                           >
                             +
-                          </button>
+                          </div>
 
                           <p className="ml-4">16+ years</p>
                         </div>
@@ -376,7 +438,6 @@ function Search() {
                         </p>
 
                         <button
-                          type="submit"
                           onClick={() => {
                             setActiveModal(false);
                           }}
@@ -414,69 +475,120 @@ function Search() {
             </form>
           </div>
 
-
-
           <div className="mt-10">
-<h1 className="text-2xl font-black text-white mb-5 ">Your Search Results:</h1>
-          <div
-              className="bg-gray-900 bg-opacity-30 text-white p-8 rounded-lg w-full flex flex-col flight-shadow"
-             
-            >
-              <div className="flex flex-row items-center justify-between gap-4">
-                <div className="mb-4 flex items-center">
-                  <input
-                    type="radio"
-                    id="oneWay"
-                    name="tripType"
-                    value="oneWay"
-                    checked={searchData.tripType === "oneWay"}
-                    onChange={handleChange}
-                    className="mr-2"
-                  />
-                  <label htmlFor="oneWay" className="text-white">
-                    IndiGo
-                  </label>
-                </div>
+            <h1 className="text-2xl font-black text-white mb-5 ">
+              Your Search Results:
+            </h1>
 
-                <div className="mb-4 flex items-center">
-                  
-                  <label htmlFor="return" className="text-white">
-                    100% on time
-                  </label>
-                </div>
-              </div>
-              <div className="flex flex-row items-center justify-between gap-28">
-                <div className="mb-4">
-                  <div className="text-white block mb-1">
-                    <p className="font-bold text-2xl">05:30</p> <p className="text-sm">New Delhi</p>
+            {flightsData ? (
+              <>
+                {flightsData.map((flight, index) => (
+                  <div
+                    key={index}
+                    onClick={()=>{navigate(`/flight/${flight.id}`);}}
+                    className="bg-gray-900 bg-opacity-30 text-white p-8 rounded-lg w-full flex flex-col flight-shadow my-10"
+                  >
+                    <div className="flex flex-col  gap-4">
+                      <div className=" flex flex-row items-center justify-between">
+                        <div>
+                          <input
+                            type="radio"
+                            id={`flight-${index}`}
+                            name="selectedFlight"
+                            value={index}
+                            checked={searchData.selectedFlight === index}
+                            onChange={handleChange}
+                            className="mr-2"
+                          />
+                          <label
+                            htmlFor={`flight-${index}`}
+                            className="text-white"
+                          >
+                            {flight.airline}
+                          </label>
+                        </div>
+
+                        <div className=" flex items-center">
+                          <label
+                            htmlFor={`flight-${index}`}
+                            className="text-white"
+                          >
+                            100% on time
+                          </label>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-row items-center justify-between gap-28">
+                        <div className="mb-4">
+                          <div className="text-white block mb-1">
+                            <p className="font-bold text-2xl">
+                              {new Date(
+                                flight.departure_time
+                              ).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </p>
+
+                            <p className="text-sm">{flight.departure_city}</p>
+                          </div>
+                        </div>
+
+                        <div className="mb-4">
+                          <div className="mb-1 flex flex-col items-center justify-center">
+                            <p className="font-bold">
+                              {
+                                calculateTimeDifference(
+                                  flight.departure_time,
+                                  flight.arrival_time
+                                ).hours
+                              }{" "}
+                              h{" "}
+                              {
+                                calculateTimeDifference(
+                                  flight.departure_time,
+                                  flight.arrival_time
+                                ).minutes
+                              }{" "}
+                              m
+                            </p>
+
+                            <p>Non stop</p>
+                          </div>
+                        </div>
+
+                        <div className="mb-4">
+                          <div className=" block mb-1">
+                            <p className="font-bold text-2xl">
+                              {new Date(flight.arrival_time).toLocaleTimeString(
+                                [],
+                                { hour: "2-digit", minute: "2-digit" }
+                              )}
+                            </p>
+
+                            <p className="text-sm">{flight.destination_city}</p>
+                          </div>
+                        </div>
+
+                        <div className="mb-4">
+                          <label
+                            htmlFor={`passengers-${index}`}
+                            className=" block mb-1"
+                          >
+                            <p className="font-bold text-2xl">
+                              {flight.base_price}
+                            </p>
+                            <p className="text-sm">per adult</p>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  
-                </div>
-                <div className="mb-4">
-                  <div className="mb-1 flex flex-col items-center justify-center">
-                    <p className="font-bold">2h 5m</p> <p>Non stop</p>
-                  </div>
-                  
-                </div>
-                <div className="mb-4">
-                  <div className=" block mb-1">
-                    <p className="font-bold text-2xl">07:35</p> <p className="text-sm">Mumbai</p>
-                  </div>
-                 
-                </div>
-                <div className="mb-4">
-                  <label htmlFor="passengers" className=" block mb-1">
-                  <p className="font-bold text-2xl">5,533</p> <p className="text-sm">per adult</p>
-                  </label>
-                  
-                </div>
-              </div>
-
-            </div>
-
-
-
-
+                ))}
+              </>
+            ) : (
+              <p className="text-white">No search results yet</p>
+            )}
           </div>
         </div>
       </main>

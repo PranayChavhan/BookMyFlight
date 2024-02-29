@@ -37,7 +37,7 @@ function Home() {
                  
                 </div>
 
-                <Link to="/search" className="get-started-button font-mono select-none fade-in3">
+                <Link to="/signup" className="get-started-button font-mono select-none fade-in3">
                   <IoSparklesSharp className="inline align-text-top" /> Get Started
                 </Link>
               </div>
