@@ -28,7 +28,7 @@ function Home() {
                 </h1>
 
                 <h1 className="md:hidden text-center pb-4 lg:pl-6 pointer-events-none select-none px-4 customFont text-5xl text-gray-100 leading-[1.1] max-w-[53rem ]">
-                  Rank the top software developers by <span className="custom-text-shadow">location</span>.
+                Book your flight tickets today 
                 </h1>
 
                 {/* Display on larger screens */}
