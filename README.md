@@ -5,7 +5,7 @@ BookMyFlight is a web application for managing flight bookings. This project is 
 ## Features
 
 - **Flight Management:** Add, delete, and retrieve flight information.
-- **User Authentication:** Secure user authentication using JWT tokens.
+- **User Authentication:** Secure user authentication using JWT tokens. 
 - **Flight Booking:** Allow users to book flights with ease.
 - **Admin Panel:** Special routes and functionalities for admin users.
 
